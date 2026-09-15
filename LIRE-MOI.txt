@@ -1,0 +1,23 @@
+MON CARNET EQUESTRE — VERSION INSTALLABLE
+
+Cette version contient :
+- index.html : ton application
+- manifest.json : permet l'installation comme application
+- service-worker.js : permet le fonctionnement hors connexion et les mises à jour
+
+IMPORTANT :
+Le double-clic sur index.html ne suffit pas pour activer une PWA.
+Pour que l'application installée sur le téléphone puisse recevoir les nouvelles
+versions quand tu modifies index.html, les fichiers doivent être hébergés sur
+une adresse HTTPS.
+
+Principe :
+1. Tu modifies index.html sur ton ordinateur.
+2. Tu mets la nouvelle version en ligne.
+3. Le téléphone récupère la nouvelle version de l'application.
+
+Attention :
+Les comptes et séances de la version actuelle utilisent encore localStorage.
+Ils restent donc propres à chaque appareil. Pour partager les comptes, séances
+et demandes entre plusieurs appareils, il faudra ensuite ajouter une base de
+données et un serveur.

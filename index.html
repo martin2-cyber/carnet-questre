@@ -1,0 +1,2705 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#6b4226">
+  <title>Mon Carnet Équestre</title>
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f5efe7;
+      color: #3b281d;
+      min-height: 100vh;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* =========================
+       ÉCRAN DE CONNEXION
+    ========================= */
+
+    #ecranConnexion {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background:
+        linear-gradient(rgba(70, 42, 24, .65), rgba(70, 42, 24, .65)),
+        linear-gradient(135deg, #8b5e3c, #d9b38c);
+    }
+
+    .connexion-box {
+      width: 100%;
+      max-width: 430px;
+      background: white;
+      border-radius: 25px;
+      padding: 35px 25px;
+      box-shadow: 0 15px 45px rgba(0,0,0,.25);
+      text-align: center;
+    }
+
+    .logo-cheval {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: #6b4226;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      margin: 0 auto 15px;
+    }
+
+    .connexion-box h1 {
+      color: #6b4226;
+      margin-bottom: 8px;
+    }
+
+    .connexion-box p {
+      color: #777;
+      margin-bottom: 25px;
+    }
+
+    .champ {
+      text-align: left;
+      margin-bottom: 15px;
+    }
+
+    .champ label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: bold;
+    }
+
+    .champ input,
+    .champ textarea,
+    .champ select {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #d6c7b8;
+      border-radius: 12px;
+      background: #fff;
+      outline: none;
+    }
+
+    .champ input:focus,
+    .champ textarea:focus,
+    .champ select:focus {
+      border-color: #6b4226;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 13px;
+      margin-top: 8px;
+      font-weight: bold;
+      transition: .2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      opacity: .92;
+    }
+
+    .btn-principal {
+      background: #6b4226;
+      color: white;
+    }
+
+    .btn-secondaire {
+      background: #eadbc9;
+      color: #4c3020;
+    }
+
+    .btn-danger {
+      background: #b42318;
+      color: white;
+    }
+
+    .btn-admin {
+      background: #8a5a20;
+      color: white;
+    }
+
+    .message {
+      margin: 15px 0;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    .message.erreur {
+      background: #ffe0dd;
+      color: #9c1c13;
+    }
+
+    .message.succes {
+      background: #ddf5df;
+      color: #216b28;
+    }
+
+    /* =========================
+       APPLICATION
+    ========================= */
+
+    #application {
+      min-height: 100vh;
+    }
+
+    header {
+      background: #6b4226;
+      color: white;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    header h1 {
+      font-size: 21px;
+    }
+
+    .profil-header {
+      font-size: 14px;
+      text-align: right;
+    }
+
+    .badge-role {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 4px 8px;
+      border-radius: 20px;
+      background: white;
+      color: #6b4226;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    nav {
+      background: #fff;
+      display: flex;
+      overflow-x: auto;
+      border-bottom: 1px solid #ddd;
+      position: sticky;
+      top: 68px;
+      z-index: 19;
+    }
+
+    nav button {
+      border: none;
+      background: white;
+      padding: 14px 16px;
+      white-space: nowrap;
+      color: #5c4636;
+      font-weight: bold;
+    }
+
+    nav button.active {
+      color: #6b4226;
+      border-bottom: 3px solid #6b4226;
+    }
+
+    main {
+      width: 100%;
+      max-width: 1000px;
+      margin: auto;
+      padding: 25px 18px 50px;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .titre-page {
+      margin-bottom: 20px;
+    }
+
+    .titre-page h2 {
+      color: #6b4226;
+      margin-bottom: 5px;
+    }
+
+    .titre-page p {
+      color: #777;
+    }
+
+    /* =========================
+       CARTES
+    ========================= */
+
+    .grille {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+    }
+
+    .carte {
+      background: white;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 5px 20px rgba(70,42,24,.08);
+      margin-bottom: 15px;
+    }
+
+    .carte h3 {
+      color: #6b4226;
+      margin-bottom: 10px;
+    }
+
+    .stat {
+      font-size: 35px;
+      font-weight: bold;
+      color: #6b4226;
+    }
+
+    /* =========================
+       SEANCES
+    ========================= */
+
+    .seance {
+      background: white;
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 5px 18px rgba(70,42,24,.08);
+    }
+
+    .seance-entete {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .seance h3 {
+      color: #6b4226;
+      margin-bottom: 5px;
+    }
+
+    .seance-info {
+      color: #777;
+      font-size: 14px;
+    }
+
+    .note {
+      background: #f0dfc8;
+      color: #6b4226;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .bloc-seance {
+      margin-top: 14px;
+    }
+
+    .bloc-seance strong {
+      display: block;
+      color: #6b4226;
+      margin-bottom: 5px;
+    }
+
+    .bloc-seance p {
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    .actions button {
+      width: auto;
+      margin: 0;
+      padding: 9px 13px;
+    }
+
+    /* =========================
+       ADMIN
+    ========================= */
+
+    .demande,
+    .utilisateur {
+      border: 1px solid #e1d4c7;
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 12px;
+      background: #fffaf5;
+    }
+
+    .ligne-utilisateur {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .role {
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .role-admin {
+      background: #ead9b9;
+      color: #704b16;
+    }
+
+    .role-cavalier {
+      background: #e5eee4;
+      color: #37603a;
+    }
+
+    .compteur {
+      display: inline-block;
+      background: #b42318;
+      color: white;
+      border-radius: 20px;
+      min-width: 22px;
+      padding: 2px 7px;
+      font-size: 11px;
+    }
+
+    .admin-note {
+      padding: 14px;
+      background: #fff4d9;
+      border-left: 4px solid #c58a20;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 600px) {
+      header {
+        padding: 14px;
+      }
+
+      header h1 {
+        font-size: 17px;
+      }
+
+      .profil-header {
+        font-size: 11px;
+      }
+
+      nav button {
+        padding: 12px 11px;
+        font-size: 12px;
+      }
+
+      main {
+        padding: 20px 12px 40px;
+      }
+
+      .seance-entete {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================
+       CONNEXION
+  ========================= -->
+
+  <section id="ecranConnexion">
+
+    <div class="connexion-box">
+
+      <div class="logo-cheval">🐴</div>
+
+      <h1>Mon Carnet Équestre</h1>
+      <p>Ton carnet personnel de séances d'équitation</p>
+
+      <div id="messageConnexion"></div>
+
+      <div class="champ">
+        <label for="identifiantConnexion">Email ou identifiant</label>
+        <input
+          type="text"
+          id="identifiantConnexion"
+          placeholder="Email ou admin"
+          autocomplete="username"
+        >
+      </div>
+
+      <div class="champ">
+        <label for="motDePasseConnexion">Mot de passe / code</label>
+        <input
+          type="password"
+          id="motDePasseConnexion"
+          placeholder="Mot de passe"
+          autocomplete="current-password"
+        >
+      </div>
+
+      <button class="btn btn-principal" onclick="seConnecter()">
+        🔐 Se connecter
+      </button>
+
+      <button class="btn btn-secondaire" onclick="afficherCreationCompte()">
+        👤 Créer un compte
+      </button>
+
+      <div id="formulaireCreation" class="hidden" style="margin-top:25px;">
+
+        <hr style="margin-bottom:20px;border:0;border-top:1px solid #ddd;">
+
+        <h3 style="color:#6b4226;margin-bottom:15px;">
+          Créer un compte
+        </h3>
+
+        <p style="font-size:13px;margin-bottom:15px;">
+          Les nouveaux comptes sont automatiquement créés avec le rôle
+          <strong>Cavalier</strong>.
+        </p>
+
+        <div class="champ">
+          <label for="creationPrenom">Prénom</label>
+          <input type="text" id="creationPrenom" placeholder="Ton prénom">
+        </div>
+
+        <div class="champ">
+          <label for="creationEmail">Email</label>
+          <input type="email" id="creationEmail" placeholder="ton@email.com">
+        </div>
+
+        <div class="champ">
+          <label for="creationMotDePasse">Mot de passe</label>
+          <input type="password" id="creationMotDePasse" placeholder="Mot de passe">
+        </div>
+
+        <button class="btn btn-principal" onclick="demanderCompte()">
+          📩 Envoyer la demande
+        </button>
+
+        <button class="btn btn-secondaire" onclick="cacherCreationCompte()">
+          Retour
+        </button>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- =========================
+       APPLICATION
+  ========================= -->
+
+  <section id="application" class="hidden">
+
+    <header>
+      <div>
+        <h1>🐴 Mon Carnet Équestre</h1>
+      </div>
+
+      <div class="profil-header">
+        <div id="nomUtilisateurHeader"></div>
+        <span id="roleUtilisateurHeader" class="badge-role"></span>
+      </div>
+    </header>
+
+    <nav>
+
+      <button id="navAccueil" onclick="ouvrirPage('accueil')">
+        🏠 Accueil
+      </button>
+
+      <button id="navNouvelle" onclick="ouvrirPage('nouvelle')">
+        ✏️ Nouvelle séance
+      </button>
+
+      <button id="navSeances" onclick="ouvrirPage('seances')">
+        📖 Mes séances
+      </button>
+
+      <button id="navParametres" onclick="ouvrirPage('parametres')">
+        ⚙️ Paramètres
+      </button>
+
+      <button id="navAdministration" class="hidden" onclick="ouvrirPage('administration')">
+        👑 Administration
+        <span id="compteurDemandes" class="compteur hidden">0</span>
+      </button>
+
+    </nav>
+
+
+    <main>
+
+      <!-- =========================
+           ACCUEIL
+      ========================= -->
+
+      <section id="page-accueil" class="page">
+
+        <div class="titre-page">
+          <h2>Bienvenue 👋</h2>
+          <p id="messageBienvenue"></p>
+        </div>
+
+        <div class="grille">
+
+          <div class="carte">
+            <h3>📚 Mes séances</h3>
+            <div class="stat" id="statSeances">0</div>
+            <p>séance(s) enregistrée(s)</p>
+          </div>
+
+          <div class="carte">
+            <h3>🐴 Dernier cheval</h3>
+            <p id="statDernierCheval">Aucune séance</p>
+          </div>
+
+          <div class="carte">
+            <h3>⭐ Moyenne</h3>
+            <div class="stat" id="statMoyenne">-</div>
+            <p>/ 10</p>
+          </div>
+
+        </div>
+
+        <div class="carte">
+          <h3>🌱 Mon carnet</h3>
+          <p>
+            Note tes séances, ce que tu as appris et ce que tu dois encore
+            améliorer. Ton carnet est organisé autour de ta progression à cheval.
+          </p>
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           NOUVELLE SEANCE
+      ========================= -->
+
+      <section id="page-nouvelle" class="page">
+
+        <div class="titre-page">
+          <h2>✏️ Nouvelle séance</h2>
+          <p>Enregistre ta séance d'équitation.</p>
+        </div>
+
+        <div class="carte">
+
+          <div class="champ">
+            <label for="seanceDate">Date</label>
+            <input type="date" id="seanceDate">
+          </div>
+
+          <div class="champ">
+            <label for="seanceCheval">Nom du cheval</label>
+            <input type="text" id="seanceCheval" placeholder="Ex : Tornado">
+          </div>
+
+          <div class="champ">
+            <label for="seanceDiscipline">Discipline</label>
+            <select id="seanceDiscipline">
+              <option value="">Choisir...</option>
+              <option>Dressage</option>
+              <option>Saut d'obstacles</option>
+              <option>CSO</option>
+              <option>Balade</option>
+              <option>Cross</option>
+              <option>Travail à pied</option>
+              <option>Éthologie</option>
+              <option>Autre</option>
+            </select>
+          </div>
+
+          <div class="champ">
+            <label for="seanceAppris">🌟 Ce que j'ai appris</label>
+            <textarea
+              id="seanceAppris"
+              placeholder="Qu'est-ce que tu as appris pendant cette séance ?"
+            ></textarea>
+          </div>
+
+          <div class="champ">
+            <label for="seanceAmeliorer">🎯 Ce que je dois mieux faire</label>
+            <textarea
+              id="seanceAmeliorer"
+              placeholder="Quels points dois-tu encore améliorer ?"
+            ></textarea>
+          </div>
+
+          <div class="champ">
+            <label for="seanceRessenti">💭 Mes sentiments / commentaires</label>
+            <textarea
+              id="seanceRessenti"
+              placeholder="Comment as-tu vécu ta séance ?"
+            ></textarea>
+          </div>
+
+          <div class="champ">
+            <label for="seanceNote">⭐ Note de la séance /10</label>
+            <input
+              type="number"
+              id="seanceNote"
+              min="0"
+              max="10"
+              step="1"
+              placeholder="Ex : 8"
+            >
+          </div>
+
+          <div id="messageNouvelleSeance"></div>
+
+          <button class="btn btn-principal" onclick="enregistrerSeance()">
+            💾 Enregistrer la séance
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           SEANCES
+      ========================= -->
+
+      <section id="page-seances" class="page">
+
+        <div class="titre-page">
+          <h2>📖 Mes séances</h2>
+          <p>Retrouve toutes tes séances enregistrées.</p>
+        </div>
+
+        <div class="carte">
+
+          <div class="champ">
+            <label for="rechercheSeance">🔎 Rechercher</label>
+            <input
+              type="text"
+              id="rechercheSeance"
+              placeholder="Cheval, discipline, texte..."
+              oninput="afficherSeances()"
+            >
+          </div>
+
+        </div>
+
+        <div id="listeSeances"></div>
+
+      </section>
+
+
+      <!-- =========================
+           PARAMETRES
+      ========================= -->
+
+      <section id="page-parametres" class="page">
+
+        <div class="titre-page">
+          <h2>⚙️ Paramètres</h2>
+          <p>Gère ton compte et la sécurité de ton carnet.</p>
+        </div>
+
+        <div class="carte">
+
+          <h3>👤 Mon compte</h3>
+
+          <p style="margin-bottom:8px;">
+            <strong>Prénom :</strong>
+            <span id="paramPrenom"></span>
+          </p>
+
+          <p style="margin-bottom:8px;">
+            <strong>Email :</strong>
+            <span id="paramEmail"></span>
+          </p>
+
+          <p style="margin-bottom:15px;">
+            <strong>Rôle :</strong>
+            <span id="paramRole"></span>
+          </p>
+
+        </div>
+
+        <div class="carte">
+
+          <h3>🔢 Code PIN du carnet</h3>
+
+          <p style="margin-bottom:15px;">
+            Tu peux définir un code PIN à 4 chiffres pour protéger l'accès
+            à ton carnet sur cet appareil.
+          </p>
+
+          <div class="champ">
+            <label for="nouveauPIN">Nouveau code PIN</label>
+            <input
+              type="password"
+              id="nouveauPIN"
+              inputmode="numeric"
+              maxlength="4"
+              placeholder="4 chiffres"
+            >
+          </div>
+
+          <button class="btn btn-principal" onclick="enregistrerPIN()">
+            🔐 Enregistrer le PIN
+          </button>
+
+          <div id="messagePIN"></div>
+
+        </div>
+
+        <div class="carte">
+
+          <h3>🚪 Session</h3>
+
+          <button class="btn btn-secondaire" onclick="seDeconnecter()">
+            🚪 Se déconnecter
+          </button>
+
+        </div>
+
+        <div class="carte">
+
+          <h3>⚠️ Zone dangereuse</h3>
+
+          <p style="margin-bottom:15px;">
+            La suppression du compte supprimera également les séances
+            enregistrées sur cet appareil.
+          </p>
+
+          <button class="btn btn-danger" onclick="supprimerMonCompte()">
+            🗑️ Supprimer mon compte
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           ADMINISTRATION
+      ========================= -->
+
+      <section id="page-administration" class="page">
+
+        <div class="titre-page">
+          <h2>👑 Administration</h2>
+          <p>Gestion des comptes et des rôles.</p>
+        </div>
+
+        <div class="admin-note">
+          <strong>🔐 Administrateur principal</strong><br>
+          Seul l'administrateur principal peut attribuer ou retirer le rôle
+          <strong>Admin</strong>. Les nouveaux comptes sont automatiquement
+          des <strong>Cavaliers</strong>.
+        </div>
+
+        <!-- DEMANDES -->
+
+        <div class="carte">
+
+          <h3>
+            📩 Demandes de création de compte
+            <span id="titreCompteurDemandes" class="compteur hidden">0</span>
+          </h3>
+
+          <div id="listeDemandes"></div>
+
+        </div>
+
+
+        <!-- COMPTES -->
+
+        <div class="carte">
+
+          <h3>👥 Comptes utilisateurs</h3>
+
+          <div id="listeComptes"></div>
+
+        </div>
+
+
+        <!-- SEANCES DES UTILISATEURS -->
+
+        <div class="carte">
+
+          <h3>📚 Séances des utilisateurs</h3>
+
+          <div class="champ">
+            <label for="choixUtilisateurSeances">
+              Sélectionner un utilisateur
+            </label>
+
+            <select
+              id="choixUtilisateurSeances"
+              onchange="afficherSeancesUtilisateur()"
+            >
+              <option value="">Choisir un utilisateur...</option>
+            </select>
+          </div>
+
+          <div id="seancesUtilisateurAdmin"></div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </section>
+
+
+  <script>
+
+    /* =====================================================
+       CONFIGURATION
+    ===================================================== */
+
+    const ROLE_CAVALIER = "cavalier";
+    const ROLE_ADMIN = "admin";
+
+    const ADMIN_PRINCIPAL_IDENTIFIANT = "admin";
+    const ADMIN_PRINCIPAL_CODE = "1307";
+
+    let utilisateurConnecte = null;
+
+
+    /* =====================================================
+       OUTILS LOCALSTORAGE
+    ===================================================== */
+
+    function obtenirComptes() {
+      return JSON.parse(
+        localStorage.getItem("comptesEquitation") || "[]"
+      );
+    }
+
+    function sauvegarderComptes(comptes) {
+      localStorage.setItem(
+        "comptesEquitation",
+        JSON.stringify(comptes)
+      );
+    }
+
+    function obtenirDemandes() {
+      return JSON.parse(
+        localStorage.getItem("demandesComptes") || "[]"
+      );
+    }
+
+    function sauvegarderDemandes(demandes) {
+      localStorage.setItem(
+        "demandesComptes",
+        JSON.stringify(demandes)
+      );
+    }
+
+    function obtenirSeances(userId) {
+      return JSON.parse(
+        localStorage.getItem("seances_" + userId) || "[]"
+      );
+    }
+
+    function sauvegarderSeances(userId, seances) {
+      localStorage.setItem(
+        "seances_" + userId,
+        JSON.stringify(seances)
+      );
+    }
+
+
+    /* =====================================================
+       MIGRATION ANCIENNE VERSION
+    ===================================================== */
+
+    function migrerAnciensComptes() {
+
+      const comptes = obtenirComptes();
+
+      let modification = false;
+
+      comptes.forEach(compte => {
+
+        if (
+          compte.role !== ROLE_ADMIN &&
+          compte.role !== ROLE_CAVALIER
+        ) {
+
+          if (compte.admin === true) {
+            compte.role = ROLE_ADMIN;
+          } else {
+            compte.role = ROLE_CAVALIER;
+          }
+
+          modification = true;
+        }
+
+        if ("admin" in compte) {
+          delete compte.admin;
+          modification = true;
+        }
+
+        if (!compte.statut) {
+          compte.statut = "accepte";
+          modification = true;
+        }
+
+      });
+
+      if (modification) {
+        sauvegarderComptes(comptes);
+      }
+    }
+
+
+    /* =====================================================
+       MESSAGES
+    ===================================================== */
+
+    function afficherMessage(elementId, texte, type) {
+
+      const element = document.getElementById(elementId);
+
+      if (!element) return;
+
+      element.innerHTML =
+        '<div class="message ' + type + '">' +
+        texte +
+        '</div>';
+
+      setTimeout(() => {
+        element.innerHTML = "";
+      }, 4000);
+    }
+
+
+    /* =====================================================
+       CREATION DE COMPTE
+    ===================================================== */
+
+    function afficherCreationCompte() {
+
+      document
+        .getElementById("formulaireCreation")
+        .classList.remove("hidden");
+    }
+
+    function cacherCreationCompte() {
+
+      document
+        .getElementById("formulaireCreation")
+        .classList.add("hidden");
+    }
+
+    function demanderCompte() {
+
+      const prenom =
+        document.getElementById("creationPrenom").value.trim();
+
+      const email =
+        document.getElementById("creationEmail").value.trim().toLowerCase();
+
+      const motdepasse =
+        document.getElementById("creationMotDePasse").value;
+
+      if (!prenom || !email || !motdepasse) {
+
+        afficherMessage(
+          "messageConnexion",
+          "⚠️ Remplis tous les champs.",
+          "erreur"
+        );
+
+        return;
+      }
+
+      if (email === ADMIN_PRINCIPAL_IDENTIFIANT) {
+
+        afficherMessage(
+          "messageConnexion",
+          "❌ Cet identifiant est réservé.",
+          "erreur"
+        );
+
+        return;
+      }
+
+      const comptes = obtenirComptes();
+
+      const existe = comptes.some(
+        compte => compte.email.toLowerCase() === email
+      );
+
+      if (existe) {
+
+        afficherMessage(
+          "messageConnexion",
+          "❌ Un compte utilise déjà cet email.",
+          "erreur"
+        );
+
+        return;
+      }
+
+      const demandes = obtenirDemandes();
+
+      const demandeExiste = demandes.some(
+        demande =>
+          demande.email.toLowerCase() === email &&
+          demande.statut === "attente"
+      );
+
+      if (demandeExiste) {
+
+        afficherMessage(
+          "messageConnexion",
+          "⚠️ Une demande est déjà en attente.",
+          "erreur"
+        );
+
+        return;
+      }
+
+      const demande = {
+
+        id: "demande-" + Date.now(),
+
+        prenom: prenom,
+
+        email: email,
+
+        motdepasse: motdepasse,
+
+        statut: "attente",
+
+        date: new Date().toISOString()
+
+      };
+
+      demandes.push(demande);
+
+      sauvegarderDemandes(demandes);
+
+      afficherMessage(
+        "messageConnexion",
+        "✅ Demande envoyée. L'administrateur doit l'accepter.",
+        "succes"
+      );
+
+      document.getElementById("creationPrenom").value = "";
+      document.getElementById("creationEmail").value = "";
+      document.getElementById("creationMotDePasse").value = "";
+
+      cacherCreationCompte();
+    }
+
+
+    /* =====================================================
+       CONNEXION
+    ===================================================== */
+
+    function seConnecter() {
+
+      const identifiant =
+        document
+          .getElementById("identifiantConnexion")
+          .value
+          .trim();
+
+      const code =
+        document.getElementById("motDePasseConnexion").value;
+
+      if (!identifiant || !code) {
+
+        afficherMessage(
+          "messageConnexion",
+          "⚠️ Entre ton identifiant et ton mot de passe.",
+          "erreur"
+        );
+
+        return;
+      }
+
+
+      /* ADMIN PRINCIPAL */
+
+      if (
+        identifiant === ADMIN_PRINCIPAL_IDENTIFIANT &&
+        code === ADMIN_PRINCIPAL_CODE
+      ) {
+
+        utilisateurConnecte = {
+
+          id: "admin-principal",
+
+          prenom: "Administrateur",
+
+          email: "admin",
+
+          role: ROLE_ADMIN,
+
+          principal: true
+
+        };
+
+        ouvrirApplication();
+
+        return;
+      }
+
+
+      /* COMPTES NORMAUX */
+
+      const comptes = obtenirComptes();
+
+      const compte = comptes.find(
+        c =>
+          c.email.toLowerCase() === identifiant.toLowerCase() &&
+          c.motdepasse === code
+      );
+
+      if (!compte) {
+
+        afficherMessage(
+          "messageConnexion",
+          "❌ Identifiant ou mot de passe incorrect.",
+          "erreur"
+        );
+
+        return;
+      }
+
+      if (compte.statut !== "accepte") {
+
+        afficherMessage(
+          "messageConnexion",
+          "⏳ Ton compte n'est pas encore accepté.",
+          "erreur"
+        );
+
+        return;
+      }
+
+      utilisateurConnecte = {
+
+        id: compte.id,
+
+        prenom: compte.prenom,
+
+        email: compte.email,
+
+        role: compte.role,
+
+        principal: false
+
+      };
+
+      ouvrirApplication();
+    }
+
+
+    /* =====================================================
+       OUVERTURE APPLICATION
+    ===================================================== */
+
+    function ouvrirApplication() {
+
+      document
+        .getElementById("ecranConnexion")
+        .classList.add("hidden");
+
+      document
+        .getElementById("application")
+        .classList.remove("hidden");
+
+      mettreAJourInterface();
+
+      ouvrirPage("accueil");
+    }
+
+
+    function mettreAJourInterface() {
+
+      if (!utilisateurConnecte) return;
+
+      document.getElementById(
+        "nomUtilisateurHeader"
+      ).textContent =
+        utilisateurConnecte.prenom;
+
+      document.getElementById(
+        "roleUtilisateurHeader"
+      ).textContent =
+        utilisateurConnecte.role === ROLE_ADMIN
+          ? "👑 Admin"
+          : "🐴 Cavalier";
+
+
+      const boutonAdmin =
+        document.getElementById("navAdministration");
+
+
+      if (utilisateurConnecte.role === ROLE_ADMIN) {
+
+        boutonAdmin.classList.remove("hidden");
+
+        mettreAJourAdministration();
+
+      } else {
+
+        boutonAdmin.classList.add("hidden");
+
+      }
+
+
+      afficherStatistiques();
+
+      document.getElementById(
+        "paramPrenom"
+      ).textContent =
+        utilisateurConnecte.prenom;
+
+      document.getElementById(
+        "paramEmail"
+      ).textContent =
+        utilisateurConnecte.email;
+
+      document.getElementById(
+        "paramRole"
+      ).textContent =
+        utilisateurConnecte.role === ROLE_ADMIN
+          ? "👑 Admin"
+          : "🐴 Cavalier";
+    }
+
+
+    /* =====================================================
+       NAVIGATION
+    ===================================================== */
+
+    function ouvrirPage(nomPage) {
+
+      if (
+        nomPage === "administration" &&
+        (!utilisateurConnecte ||
+         utilisateurConnecte.role !== ROLE_ADMIN)
+      ) {
+
+        alert("❌ Accès réservé aux administrateurs.");
+
+        return;
+      }
+
+      document
+        .querySelectorAll(".page")
+        .forEach(page => page.classList.remove("active"));
+
+      const page =
+        document.getElementById("page-" + nomPage);
+
+      if (page) {
+        page.classList.add("active");
+      }
+
+
+      document
+        .querySelectorAll("nav button")
+        .forEach(button => button.classList.remove("active"));
+
+
+      const navButton =
+        document.getElementById("nav" +
+          nomPage.charAt(0).toUpperCase() +
+          nomPage.slice(1));
+
+      if (navButton) {
+        navButton.classList.add("active");
+      }
+
+
+      if (nomPage === "seances") {
+        afficherSeances();
+      }
+
+      if (nomPage === "administration") {
+        mettreAJourAdministration();
+      }
+
+      if (nomPage === "parametres") {
+        mettreAJourInterface();
+      }
+    }
+
+
+    /* =====================================================
+       NOUVELLE SEANCE
+    ===================================================== */
+
+    function enregistrerSeance() {
+
+      if (!utilisateurConnecte) return;
+
+      const date =
+        document.getElementById("seanceDate").value;
+
+      const cheval =
+        document.getElementById("seanceCheval").value.trim();
+
+      const discipline =
+        document.getElementById("seanceDiscipline").value;
+
+      const appris =
+        document.getElementById("seanceAppris").value.trim();
+
+      const ameliorer =
+        document.getElementById("seanceAmeliorer").value.trim();
+
+      const ressenti =
+        document.getElementById("seanceRessenti").value.trim();
+
+      const note =
+        document.getElementById("seanceNote").value;
+
+
+      if (!date || !cheval || !discipline) {
+
+        afficherMessage(
+          "messageNouvelleSeance",
+          "⚠️ Remplis au minimum la date, le cheval et la discipline.",
+          "erreur"
+        );
+
+        return;
+      }
+
+
+      if (
+        note !== "" &&
+        (Number(note) < 0 || Number(note) > 10)
+      ) {
+
+        afficherMessage(
+          "messageNouvelleSeance",
+          "⚠️ La note doit être comprise entre 0 et 10.",
+          "erreur"
+        );
+
+        return;
+      }
+
+
+      const seances =
+        obtenirSeances(utilisateurConnecte.id);
+
+
+      const seance = {
+
+        id: "seance-" + Date.now(),
+
+        date: date,
+
+        cheval: cheval,
+
+        discipline: discipline,
+
+        appris: appris,
+
+        ameliorer: ameliorer,
+
+        ressenti: ressenti,
+
+        note: note === "" ? null : Number(note),
+
+        auteur: utilisateurConnecte.prenom,
+
+        auteurId: utilisateurConnecte.id
+
+      };
+
+
+      seances.unshift(seance);
+
+      sauvegarderSeances(
+        utilisateurConnecte.id,
+        seances
+      );
+
+
+      document.getElementById("seanceDate").value = "";
+      document.getElementById("seanceCheval").value = "";
+      document.getElementById("seanceDiscipline").value = "";
+      document.getElementById("seanceAppris").value = "";
+      document.getElementById("seanceAmeliorer").value = "";
+      document.getElementById("seanceRessenti").value = "";
+      document.getElementById("seanceNote").value = "";
+
+
+      afficherMessage(
+        "messageNouvelleSeance",
+        "✅ Séance enregistrée !",
+        "succes"
+      );
+
+      afficherStatistiques();
+    }
+
+
+    /* =====================================================
+       AFFICHER MES SEANCES
+    ===================================================== */
+
+    function afficherSeances() {
+
+      if (!utilisateurConnecte) return;
+
+      const conteneur =
+        document.getElementById("listeSeances");
+
+      const recherche =
+        document
+          .getElementById("rechercheSeance")
+          .value
+          .toLowerCase()
+          .trim();
+
+      let seances =
+        obtenirSeances(utilisateurConnecte.id);
+
+
+      if (recherche) {
+
+        seances = seances.filter(seance => {
+
+          const texte = (
+
+            seance.cheval + " " +
+            seance.discipline + " " +
+            seance.appris + " " +
+            seance.ameliorer + " " +
+            seance.ressenti
+
+          ).toLowerCase();
+
+          return texte.includes(recherche);
+
+        });
+      }
+
+
+      if (seances.length === 0) {
+
+        conteneur.innerHTML = `
+          <div class="carte">
+            <h3>🐴 Aucune séance</h3>
+            <p>
+              Tu n'as pas encore enregistré de séance correspondant
+              à ta recherche.
+            </p>
+          </div>
+        `;
+
+        return;
+      }
+
+
+      conteneur.innerHTML =
+        seances.map(seance => creerCarteSeance(
+          seance,
+          true
+        )).join("");
+    }
+
+
+    function creerCarteSeance(seance, afficherSuppression) {
+
+      const dateFormatee =
+        formaterDate(seance.date);
+
+      return `
+
+        <div class="seance">
+
+          <div class="seance-entete">
+
+            <div>
+              <h3>🐴 ${echapperHTML(seance.cheval)}</h3>
+
+              <div class="seance-info">
+                📅 ${dateFormatee}
+                ·
+                ${echapperHTML(seance.discipline)}
+              </div>
+            </div>
+
+            ${
+              seance.note !== null
+                ? `<div class="note">⭐ ${seance.note}/10</div>`
+                : ""
+            }
+
+          </div>
+
+
+          ${
+            seance.appris
+              ? `
+                <div class="bloc-seance">
+                  <strong>🌟 Ce que j'ai appris</strong>
+                  <p>${echapperHTML(seance.appris)}</p>
+                </div>
+              `
+              : ""
+          }
+
+
+          ${
+            seance.ameliorer
+              ? `
+                <div class="bloc-seance">
+                  <strong>🎯 Ce que je dois mieux faire</strong>
+                  <p>${echapperHTML(seance.ameliorer)}</p>
+                </div>
+              `
+              : ""
+          }
+
+
+          ${
+            seance.ressenti
+              ? `
+                <div class="bloc-seance">
+                  <strong>💭 Mes sentiments / commentaires</strong>
+                  <p>${echapperHTML(seance.ressenti)}</p>
+                </div>
+              `
+              : ""
+          }
+
+
+          ${
+            afficherSuppression
+              ? `
+                <div class="actions">
+                  <button
+                    class="btn btn-danger"
+                    onclick="supprimerSeance('${seance.id}')"
+                  >
+                    🗑️ Supprimer
+                  </button>
+                </div>
+              `
+              : ""
+          }
+
+        </div>
+
+      `;
+    }
+
+
+    function supprimerSeance(id) {
+
+      if (!utilisateurConnecte) return;
+
+      if (
+        !confirm("Supprimer cette séance ?")
+      ) return;
+
+      let seances =
+        obtenirSeances(utilisateurConnecte.id);
+
+      seances =
+        seances.filter(
+          seance => seance.id !== id
+        );
+
+      sauvegarderSeances(
+        utilisateurConnecte.id,
+        seances
+      );
+
+      afficherSeances();
+
+      afficherStatistiques();
+    }
+
+
+    /* =====================================================
+       STATISTIQUES
+    ===================================================== */
+
+    function afficherStatistiques() {
+
+      if (!utilisateurConnecte) return;
+
+      const seances =
+        obtenirSeances(utilisateurConnecte.id);
+
+
+      document.getElementById(
+        "statSeances"
+      ).textContent =
+        seances.length;
+
+
+      if (seances.length > 0) {
+
+        document.getElementById(
+          "statDernierCheval"
+        ).textContent =
+          seances[0].cheval;
+
+      } else {
+
+        document.getElementById(
+          "statDernierCheval"
+        ).textContent =
+          "Aucune séance";
+
+      }
+
+
+      const notes =
+        seances
+          .filter(s => s.note !== null)
+          .map(s => Number(s.note));
+
+
+      if (notes.length > 0) {
+
+        const moyenne =
+          notes.reduce(
+            (total, note) => total + note,
+            0
+          ) / notes.length;
+
+        document.getElementById(
+          "statMoyenne"
+        ).textContent =
+          moyenne.toFixed(1);
+
+      } else {
+
+        document.getElementById(
+          "statMoyenne"
+        ).textContent =
+          "-";
+      }
+
+
+      document.getElementById(
+        "messageBienvenue"
+      ).textContent =
+        "Bienvenue " +
+        utilisateurConnecte.prenom +
+        " ! Prêt(e) pour ta prochaine séance ?";
+    }
+
+
+    /* =====================================================
+       ADMINISTRATION — SECURITE
+    ===================================================== */
+
+    function estAdmin() {
+
+      return (
+        utilisateurConnecte &&
+        utilisateurConnecte.role === ROLE_ADMIN
+      );
+    }
+
+
+    function estAdminPrincipal() {
+
+      return (
+        utilisateurConnecte &&
+        utilisateurConnecte.principal === true
+      );
+    }
+
+
+    function verifierAdminPrincipal() {
+
+      if (!estAdminPrincipal()) {
+
+        alert(
+          "❌ Seul l'administrateur principal peut effectuer cette action."
+        );
+
+        return false;
+      }
+
+      return true;
+    }
+
+
+    /* =====================================================
+       ADMINISTRATION — AFFICHAGE
+    ===================================================== */
+
+    function mettreAJourAdministration() {
+
+      if (!estAdmin()) return;
+
+      afficherDemandes();
+
+      afficherComptes();
+
+      remplirListeUtilisateurs();
+
+      mettreAJourCompteurDemandes();
+    }
+
+
+    /* =====================================================
+       DEMANDES DE COMPTE
+    ===================================================== */
+
+    function afficherDemandes() {
+
+      if (!estAdmin()) return;
+
+      const demandes =
+        obtenirDemandes();
+
+      const conteneur =
+        document.getElementById("listeDemandes");
+
+
+      const enAttente =
+        demandes.filter(
+          demande => demande.statut === "attente"
+        );
+
+
+      if (enAttente.length === 0) {
+
+        conteneur.innerHTML = `
+          <p style="color:#777;margin-top:10px;">
+            Aucune demande en attente.
+          </p>
+        `;
+
+        return;
+      }
+
+
+      conteneur.innerHTML =
+        enAttente.map(demande => `
+
+          <div class="demande">
+
+            <strong>👤 ${echapperHTML(demande.prenom)}</strong>
+
+            <p style="margin:6px 0;">
+              📧 ${echapperHTML(demande.email)}
+            </p>
+
+            <p style="font-size:12px;color:#777;">
+              📅 ${formaterDateHeure(demande.date)}
+            </p>
+
+            <div class="actions">
+
+              <button
+                class="btn btn-principal"
+                onclick="accepterDemande('${demande.id}')"
+              >
+                ✅ Accepter
+              </button>
+
+              <button
+                class="btn btn-danger"
+                onclick="refuserDemande('${demande.id}')"
+              >
+                ❌ Refuser
+              </button>
+
+            </div>
+
+          </div>
+
+        `).join("");
+    }
+
+
+    function accepterDemande(id) {
+
+      if (!verifierAdminPrincipal()) return;
+
+
+      const demandes =
+        obtenirDemandes();
+
+      const index =
+        demandes.findIndex(
+          demande => demande.id === id
+        );
+
+
+      if (index === -1) return;
+
+
+      const demande =
+        demandes[index];
+
+
+      const comptes =
+        obtenirComptes();
+
+
+      const emailExiste =
+        comptes.some(
+          compte =>
+            compte.email.toLowerCase() ===
+            demande.email.toLowerCase()
+        );
+
+
+      if (emailExiste) {
+
+        alert(
+          "❌ Un compte avec cet email existe déjà."
+        );
+
+        return;
+      }
+
+
+      const nouveauCompte = {
+
+        id: "user-" + Date.now(),
+
+        prenom: demande.prenom,
+
+        email: demande.email,
+
+        motdepasse: demande.motdepasse,
+
+        /* IMPORTANT :
+           toujours Cavalier à la création */
+
+        role: ROLE_CAVALIER,
+
+        statut: "accepte"
+
+      };
+
+
+      comptes.push(nouveauCompte);
+
+      sauvegarderComptes(comptes);
+
+
+      demandes.splice(index, 1);
+
+      sauvegarderDemandes(demandes);
+
+
+      alert(
+        "✅ Compte accepté.\n\n" +
+        demande.prenom +
+        " est maintenant Cavalier."
+      );
+
+
+      mettreAJourAdministration();
+    }
+
+
+    function refuserDemande(id) {
+
+      if (!verifierAdminPrincipal()) return;
+
+
+      const demandes =
+        obtenirDemandes();
+
+      const index =
+        demandes.findIndex(
+          demande => demande.id === id
+        );
+
+
+      if (index === -1) return;
+
+
+      if (
+        !confirm(
+          "Refuser cette demande de compte ?"
+        )
+      ) return;
+
+
+      demandes.splice(index, 1);
+
+      sauvegarderDemandes(demandes);
+
+      mettreAJourAdministration();
+    }
+
+
+    function mettreAJourCompteurDemandes() {
+
+      const demandes =
+        obtenirDemandes();
+
+      const nombre =
+        demandes.filter(
+          d => d.statut === "attente"
+        ).length;
+
+
+      const compteur =
+        document.getElementById("compteurDemandes");
+
+      const titreCompteur =
+        document.getElementById("titreCompteurDemandes");
+
+
+      if (nombre > 0) {
+
+        compteur.textContent = nombre;
+        compteur.classList.remove("hidden");
+
+        titreCompteur.textContent = nombre;
+        titreCompteur.classList.remove("hidden");
+
+      } else {
+
+        compteur.classList.add("hidden");
+        titreCompteur.classList.add("hidden");
+
+      }
+    }
+
+
+    /* =====================================================
+       ADMINISTRATION — COMPTES
+    ===================================================== */
+
+    function afficherComptes() {
+
+      if (!estAdmin()) return;
+
+
+      const comptes =
+        obtenirComptes();
+
+      const conteneur =
+        document.getElementById("listeComptes");
+
+
+      if (comptes.length === 0) {
+
+        conteneur.innerHTML = `
+          <p style="color:#777;">
+            Aucun autre compte.
+          </p>
+        `;
+
+        return;
+      }
+
+
+      conteneur.innerHTML =
+        comptes.map(compte => {
+
+          const roleAdmin =
+            compte.role === ROLE_ADMIN;
+
+
+          return `
+
+            <div class="utilisateur">
+
+              <div class="ligne-utilisateur">
+
+                <div>
+
+                  <strong>
+                    👤 ${echapperHTML(compte.prenom)}
+                  </strong>
+
+                  <p style="font-size:13px;color:#777;">
+                    ${echapperHTML(compte.email)}
+                  </p>
+
+                  <p style="font-size:12px;color:#777;">
+                    ID : ${echapperHTML(compte.id)}
+                  </p>
+
+                </div>
+
+
+                <div>
+
+                  <span class="role ${
+                    roleAdmin
+                      ? "role-admin"
+                      : "role-cavalier"
+                  }">
+
+                    ${
+                      roleAdmin
+                        ? "👑 Admin"
+                        : "🐴 Cavalier"
+                    }
+
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              ${
+                estAdminPrincipal()
+                  ? `
+
+                    <div class="actions">
+
+                      ${
+                        roleAdmin
+
+                          ? `
+
+                            <button
+                              class="btn btn-secondaire"
+                              onclick="changerRole('${compte.id}', '${ROLE_CAVALIER}')"
+                            >
+                              🐴 Donner le rôle Cavalier
+                            </button>
+
+                          `
+
+                          : `
+
+                            <button
+                              class="btn btn-admin"
+                              onclick="changerRole('${compte.id}', '${ROLE_ADMIN}')"
+                            >
+                              👑 Donner le rôle Admin
+                            </button>
+
+                          `
+                      }
+
+
+                      <button
+                        class="btn btn-danger"
+                        onclick="supprimerCompte('${compte.id}')"
+                      >
+                        🗑️ Supprimer
+                      </button>
+
+                    </div>
+
+                  `
+                  : ""
+              }
+
+            </div>
+
+          `;
+
+        }).join("");
+    }
+
+
+    /* =====================================================
+       CHANGER ROLE
+    ===================================================== */
+
+    function changerRole(id, nouveauRole) {
+
+      if (!verifierAdminPrincipal()) return;
+
+
+      if (
+        nouveauRole !== ROLE_ADMIN &&
+        nouveauRole !== ROLE_CAVALIER
+      ) {
+
+        alert("❌ Rôle invalide.");
+
+        return;
+      }
+
+
+      const comptes =
+        obtenirComptes();
+
+      const compte =
+        comptes.find(
+          c => c.id === id
+        );
+
+
+      if (!compte) {
+
+        alert("❌ Compte introuvable.");
+
+        return;
+      }
+
+
+      const ancienRole =
+        compte.role;
+
+
+      if (ancienRole === nouveauRole) {
+        return;
+      }
+
+
+      const nomRole =
+        nouveauRole === ROLE_ADMIN
+          ? "Admin"
+          : "Cavalier";
+
+
+      if (
+        !confirm(
+          "Changer le rôle de " +
+          compte.prenom +
+          " en " +
+          nomRole +
+          " ?"
+        )
+      ) return;
+
+
+      compte.role =
+        nouveauRole;
+
+
+      sauvegarderComptes(comptes);
+
+
+      alert(
+        "✅ " +
+        compte.prenom +
+        " est maintenant " +
+        nomRole +
+        "."
+      );
+
+
+      mettreAJourAdministration();
+    }
+
+
+    /* =====================================================
+       SUPPRIMER COMPTE
+    ===================================================== */
+
+    function supprimerCompte(id) {
+
+      if (!verifierAdminPrincipal()) return;
+
+
+      const comptes =
+        obtenirComptes();
+
+      const compte =
+        comptes.find(
+          c => c.id === id
+        );
+
+
+      if (!compte) return;
+
+
+      if (
+        !confirm(
+          "Supprimer définitivement le compte de " +
+          compte.prenom +
+          " ?"
+        )
+      ) return;
+
+
+      const nouveauxComptes =
+        comptes.filter(
+          c => c.id !== id
+        );
+
+
+      sauvegarderComptes(
+        nouveauxComptes
+      );
+
+
+      localStorage.removeItem(
+        "seances_" + id
+      );
+
+      localStorage.removeItem(
+        "codePIN_" + id
+      );
+
+
+      alert(
+        "✅ Compte supprimé."
+      );
+
+
+      mettreAJourAdministration();
+    }
+
+
+    /* =====================================================
+       LISTE UTILISATEURS POUR LES SEANCES
+    ===================================================== */
+
+    function remplirListeUtilisateurs() {
+
+      if (!estAdmin()) return;
+
+
+      const select =
+        document.getElementById(
+          "choixUtilisateurSeances"
+        );
+
+
+      const comptes =
+        obtenirComptes();
+
+
+      const ancienneValeur =
+        select.value;
+
+
+      select.innerHTML =
+        `<option value="">
+          Choisir un utilisateur...
+        </option>`;
+
+
+      comptes.forEach(compte => {
+
+        const option =
+          document.createElement("option");
+
+        option.value =
+          compte.id;
+
+        option.textContent =
+          compte.prenom +
+          " — " +
+          compte.email +
+          " (" +
+          (
+            compte.role === ROLE_ADMIN
+              ? "Admin"
+              : "Cavalier"
+          ) +
+          ")";
+
+        select.appendChild(option);
+      });
+
+
+      if (
+        comptes.some(
+          compte =>
+            compte.id === ancienneValeur
+        )
+      ) {
+
+        select.value =
+          ancienneValeur;
+      }
+    }
+
+
+    /* =====================================================
+       VOIR SEANCES D'UN UTILISATEUR
+    ===================================================== */
+
+    function afficherSeancesUtilisateur() {
+
+      if (!estAdmin()) return;
+
+
+      const id =
+        document.getElementById(
+          "choixUtilisateurSeances"
+        ).value;
+
+
+      const conteneur =
+        document.getElementById(
+          "seancesUtilisateurAdmin"
+        );
+
+
+      if (!id) {
+
+        conteneur.innerHTML = "";
+
+        return;
+      }
+
+
+      const comptes =
+        obtenirComptes();
+
+      const compte =
+        comptes.find(
+          c => c.id === id
+        );
+
+
+      if (!compte) return;
+
+
+      const seances =
+        obtenirSeances(id);
+
+
+      if (seances.length === 0) {
+
+        conteneur.innerHTML = `
+
+          <div style="
+            margin-top:15px;
+            padding:15px;
+            background:#f7f1ea;
+            border-radius:12px;
+          ">
+
+            Aucune séance enregistrée pour
+            <strong>
+              ${echapperHTML(compte.prenom)}
+            </strong>.
+
+          </div>
+
+        `;
+
+        return;
+      }
+
+
+      conteneur.innerHTML = `
+
+        <div style="margin-top:20px;">
+
+          <h3 style="margin-bottom:12px;">
+            Séances de ${echapperHTML(compte.prenom)}
+          </h3>
+
+          ${
+
+            seances
+              .map(seance =>
+                creerCarteSeance(
+                  seance,
+                  false
+                )
+              )
+              .join("")
+
+          }
+
+        </div>
+
+      `;
+    }
+
+
+    /* =====================================================
+       PIN
+    ===================================================== */
+
+    function enregistrerPIN() {
+
+      if (!utilisateurConnecte) return;
+
+
+      const pin =
+        document.getElementById(
+          "nouveauPIN"
+        ).value;
+
+
+      if (!/^\d{4}$/.test(pin)) {
+
+        afficherMessage(
+          "messagePIN",
+          "⚠️ Le PIN doit contenir exactement 4 chiffres.",
+          "erreur"
+        );
+
+        return;
+      }
+
+
+      localStorage.setItem(
+        "codePIN_" + utilisateurConnecte.id,
+        pin
+      );
+
+
+      document.getElementById(
+        "nouveauPIN"
+      ).value = "";
+
+
+      afficherMessage(
+        "messagePIN",
+        "✅ Code PIN enregistré.",
+        "succes"
+      );
+    }
+
+
+    /* =====================================================
+       SUPPRIMER MON COMPTE
+    ===================================================== */
+
+    function supprimerMonCompte() {
+
+      if (
+        !utilisateurConnecte ||
+        utilisateurConnecte.principal
+      ) {
+
+        alert(
+          "❌ Le compte administrateur principal ne peut pas être supprimé ici."
+        );
+
+        return;
+      }
+
+
+      if (
+        !confirm(
+          "⚠️ Supprimer ton compte et toutes tes séances ?"
+        )
+      ) return;
+
+
+      const comptes =
+        obtenirComptes();
+
+
+      const nouveauxComptes =
+        comptes.filter(
+          c =>
+            c.id !== utilisateurConnecte.id
+        );
+
+
+      sauvegarderComptes(
+        nouveauxComptes
+      );
+
+
+      localStorage.removeItem(
+        "seances_" + utilisateurConnecte.id
+      );
+
+      localStorage.removeItem(
+        "codePIN_" + utilisateurConnecte.id
+      );
+
+
+      utilisateurConnecte = null;
+
+
+      document
+        .getElementById("application")
+        .classList.add("hidden");
+
+      document
+        .getElementById("ecranConnexion")
+        .classList.remove("hidden");
+
+
+      alert(
+        "✅ Ton compte a été supprimé."
+      );
+    }
+
+
+    /* =====================================================
+       DECONNEXION
+    ===================================================== */
+
+    function seDeconnecter() {
+
+      utilisateurConnecte = null;
+
+
+      document
+        .getElementById("application")
+        .classList.add("hidden");
+
+      document
+        .getElementById("ecranConnexion")
+        .classList.remove("hidden");
+
+
+      document.getElementById(
+        "identifiantConnexion"
+      ).value = "";
+
+      document.getElementById(
+        "motDePasseConnexion"
+      ).value = "";
+
+
+      cacherCreationCompte();
+    }
+
+
+    /* =====================================================
+       UTILITAIRES
+    ===================================================== */
+
+    function formaterDate(date) {
+
+      if (!date) return "";
+
+      const morceaux =
+        date.split("-");
+
+      if (morceaux.length !== 3) {
+        return date;
+      }
+
+      return (
+        morceaux[2] +
+        "/" +
+        morceaux[1] +
+        "/" +
+        morceaux[0]
+      );
+    }
+
+
+    function formaterDateHeure(date) {
+
+      if (!date) return "";
+
+      const d =
+        new Date(date);
+
+      return d.toLocaleString(
+        "fr-FR",
+        {
+          dateStyle: "short",
+          timeStyle: "short"
+        }
+      );
+    }
+
+
+    function echapperHTML(texte) {
+
+      if (texte === null ||
+          texte === undefined) {
+        return "";
+      }
+
+      return String(texte)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+
+    /* =====================================================
+       INITIALISATION
+    ===================================================== */
+
+    function initialiser() {
+
+      migrerAnciensComptes();
+
+      const aujourdHui =
+        new Date()
+          .toISOString()
+          .split("T")[0];
+
+      document.getElementById(
+        "seanceDate"
+      ).value =
+        aujourdHui;
+    }
+
+
+    initialiser();
+
+    /* =====================================================
+       APPLICATION INSTALLABLE + MISE A JOUR
+    ===================================================== */
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js")
+          .then(() => console.log("Application prête et mise à jour automatiquement."))
+          .catch(erreur => console.error("Service Worker :", erreur));
+      });
+    }
+
+  </script>
+
+</body>
+</html>
